@@ -2,7 +2,6 @@
 *
 DONE BY :Robin Baldeo
 COURSE: ST556
-SECTION: Online Section
 DATE WRITTEN: 6/28/2018
 HOMEWORK #: 1
 INPUT FILE: None
@@ -29,43 +28,31 @@ run;
 /*   simulate nsim = 10000 rolls of n = 3 dice, computing the sum for each roll.*/
 
 data hw1.DiceRollb;
-/*array for n dices */
+/*array for 3 dices */
 array dice[3] dice1 dice2 dice3;
 /*var for the number of dices */
 n_ = dim(dice);
-/*var for the sum */
-retain sum_ 0; 
-    do i = 1 to 10000;
+sim = 10000;
+/*var for the sum  and count of sum to 9*/
+retain sum_  count 0; 
+    do i = 1 to sim;
         do n = 1 to n_;
             do;
                 dice[n] = ceil(ranuni(&seed) * 6);
                 sum_ = sum_ + dice[n];
+                
             end;
         end;
-        /*bool to see if the sum was a 9 */
-        if(sum_ = 9) then
-            is9 = 1;
-        else
-            is9 = 0;
-        ;
+        /*count the number of sum to 9*/
+        count = ifn(sum_=9,count +1, count);
+        /*phat is last obs*/
+        ph = count/ sim;
         output;
         /*reset sum var*/
         sum_ = 0;
-        
     end;
-    drop n i n_;
+    drop n i  sim;
 run;
-
-
-/*finding the proportion */
-proc means data = hw1.DiceRollb mean n;
-    title 'phat generated when sum is 9';
-    var is9;
-    output out = hw1.phat9 mean = ph;
-run;
-
-/*output for phat for part b*/
-/*phat = 0.1206*/
 
 
 /*/*(c) Use PROC GCHART to produce a histogram for sums of 3 dice.*/
@@ -82,9 +69,10 @@ run;
 
 /*calcuating Monte Carlo Standard Error from part b using formula*/
 data hw1.Mcse;
-    set hw1.phat9;
-        n_ = 3;
+    set hw1.DiceRollb end = eof;
         sePHat = sqrt((ph*(1-ph))/n_);
+    if eof;
+    keep sePhat;
 run;
 
 /*output for phat for part d*/
@@ -107,41 +95,30 @@ run;
 /*(f) Repeat parts b) and e) by considering the chance that n = 5 dice leads to a sum of 15.*/
 /*   simulate nsim = 10000 rolls of n = 5 dice, computing the sum for each roll.*/
 
+
+
 data hw1.DiceRollf;
-/*array for n dices */
+/*array to hold the 5 dice rolls*/
 array dice[5] dice1 dice2 dice3 dice4 dice5;
-/*var for the number of dices */
 n_ = dim(dice);
-/*var for the sum */
-/*var for the sum */
-retain sum_ 0; 
-    do i = 1 to 10000;
+retain sum_  count 0; 
+sim = 10000; 
+    do i = 1 to sim;
         do n = 1 to n_;
             do;
+                /*seeding the array with values*/
                 dice[n] = ceil(ranuni(&seed) * 6);
+                /*suming values of dices*/
                 sum_ = sum_ + dice[n];
             end;
         end;
-        /*bool to see if the sum was a 15 */
-        if(sum_ = 15) then
-            is15 = 1;
-        else
-            is15 = 0;
-        ;
-        output;
-        /*reset sum var*/
+        count = ifn(sum_=15,count +1, count);
+        /*phat is last obs*/
+        ph = count/ sim;
+        /*reset phat*/
         sum_ = 0;
-        
     end;
-    drop n i n_;
-run;
-
-
-proc means data = hw1.DiceRollf;
-    title 'phat generated when sum is 15';
-    var is15;
-    output out = hw1.phat15 mean = phat15;
-
+    drop n i sim;
 run;
 
 
