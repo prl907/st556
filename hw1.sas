@@ -1,4 +1,3 @@
-
 *
 DONE BY :Robin Baldeo
 COURSE: ST556
@@ -7,8 +6,9 @@ HOMEWORK #: 1
 INPUT FILE: None
 ;
 
-libname hw1 'C:\Users\prl90\Desktop\St556';
+libname hw1 'C:\Users\u551791\Desktop\per\556';
 %let seed = 123;
+%let sim = 10000;
 
 /****************************************************************************************************************/
 /*Question 2*/
@@ -32,31 +32,32 @@ data hw1.DiceRollb;
 array dice[3] dice1 dice2 dice3;
 /*var for the number of dices */
 n_ = dim(dice);
-sim = 10000;
-/*var for the sum  and count of sum to 9*/
+/*var for the sum which hold the sum of the 3 dice and count of sum to 9*/
 retain sum_  count 0; 
-    do i = 1 to sim;
+    do i = 1 to &sim;
         do n = 1 to n_;
             do;
                 dice[n] = ceil(ranuni(&seed) * 6);
                 sum_ = sum_ + dice[n];
-                
             end;
         end;
         /*count the number of sum to 9*/
         count = ifn(sum_=9,count +1, count);
         /*phat is last obs*/
-        ph = count/ sim;
+        ph = count/ &sim;
         output;
         /*reset sum var*/
         sum_ = 0;
     end;
-    drop n i  sim;
+    drop n i count;
 run;
 
+/*print the last obs with for phat*/
+proc print data = hw1.DiceRollb(firstobs = &sim  keep= ph );
+	title 'phat for the sum of 3 dice = 9';
+run;
 
 /*/*(c) Use PROC GCHART to produce a histogram for sums of 3 dice.*/
-
 proc gchart data = hw1.DiceRollb;
   title 'Histogram for when sum is 9 for 3 dice';
   vbar sum_;
@@ -75,8 +76,6 @@ data hw1.Mcse;
     keep sePhat;
 run;
 
-/*output for phat for part d*/
-/*sePhat = 0.1880881974*/
 
 
 /*(e) Use the Central Limit Theorem to analytically (i.e. no simulation) estimate the chance of getting*/
@@ -88,22 +87,17 @@ data hw1.clt;
     ana = CDF ('normal ' ,9.5 ,n*3.5 , sqrt (n*35/ 12)) - CDF ('normal ' ,8.5 ,n*3.5 , sqrt (n*35/ 12));
 run;
 
-/*output for phat for part e*/
-/*ana = 0.118177196*/
 
 
 /*(f) Repeat parts b) and e) by considering the chance that n = 5 dice leads to a sum of 15.*/
 /*   simulate nsim = 10000 rolls of n = 5 dice, computing the sum for each roll.*/
-
-
 
 data hw1.DiceRollf;
 /*array to hold the 5 dice rolls*/
 array dice[5] dice1 dice2 dice3 dice4 dice5;
 n_ = dim(dice);
 retain sum_  count 0; 
-sim = 10000; 
-    do i = 1 to sim;
+    do i = 1 to &sim;
         do n = 1 to n_;
             do;
                 /*seeding the array with values*/
@@ -114,11 +108,18 @@ sim = 10000;
         end;
         count = ifn(sum_=15,count +1, count);
         /*phat is last obs*/
-        ph = count/ sim;
+        ph = count/ &sim;
+		output;
         /*reset phat*/
         sum_ = 0;
     end;
-    drop n i sim;
+    drop n i ;
+run;
+
+
+/*print the last obs with for phat*/
+proc print data = hw1.DiceRollf(firstobs = &sim  keep= ph );
+	title 'phat for the sum of 5 dice = 15';
 run;
 
 
@@ -142,7 +143,7 @@ data hw1.Demere;
     array roll[4] roll1 - roll4;
     /*var for the number of dices */
     n_ = dim(roll);
-    do i = 1 to 10000;
+    do i = 1 to &sim;
         do n = 1 to n_;
             roll[n] = ceil(ranuni(&seed) * 6);
         end;
@@ -162,9 +163,9 @@ run;
 /*question 4*/
 
 /*Recall that if FY (y) denotes the cumulative distribution function (CDF) of a random variable (RV) of*/
-/*interest and U is a RV uniformly distributed between 0 and 1, then F??1*/
-/*Y (U) is a RV with CDF FY (y)*/
-/*where F??1*/
+/*interest and U is a RV uniformly distributed between 0 and 1, then Fy-1(U)*/
+/*is a RV with CDF FY (y)*/
+/*where Fy-1*/
 /*Y is the inverse of FY (y), or the so-called quantile function.*/
 
 
@@ -208,20 +209,29 @@ run;
 
 
 /*(d) Draw a larger sample of uniform RVs by increasing the sample size to n = 1000.*/
-/*i. Report the sample mean and standard deviation of this larger sample.*/
-/*ii. Use the following statement within the do loop to generate another random sample from*/
-/*the exponential distribution using the built-in SAS function, RANEXP: x2=5*ranexp(1234);*/
-/*Report the sample mean and standard deviation of this larger sample.*/
+
+
 
 /*using built in function with larger sample*/
 data hw1.expoDistB;
     do i = 1 to 1000;
+		uni = ranuni(&seed);
         expo =5*ranexp(&seed);
         output;
     end;
 run;
 
-/*mean and stand dev for the built in function*/
+/*i. Report the sample mean and standard deviation of this larger sample.*/
+proc means data = hw1.expoDistB mean std;
+    title 'using sas built in ranuni to create mean and std';
+    var uni;
+run;
+
+
+/*ii. Use the following statement within the do loop to generate another random sample from*/
+/*the exponential distribution using the built-in SAS function, RANEXP: x2=5*ranexp(1234);*/
+/*Report the sample mean and standard deviation of this larger sample.*/
+
 proc means data = hw1.expoDistB mean std;
     title 'using sas built in ranexp to create mean and std';
     var expo;
@@ -259,7 +269,7 @@ run;
 
 data hw1.cauchy;
     call streaminit(&seed);
-    do i = 1 to 10;
+    do i = 1 to 20;
         cau =rand('cauchy');
         output;
     end;
@@ -269,4 +279,3 @@ proc means data = hw1.cauchy mean std;
     title 'using sas built in function for cacuchy';
     var cau;
 run;
-
