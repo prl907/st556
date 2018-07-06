@@ -6,7 +6,7 @@ HOMEWORK #: 1
 INPUT FILE: None
 ;
 
-libname hw1 'C:\Users\u551791\Desktop\per\556';
+libname hw1 'C:\Users\prl90\Desktop\St556';
 %let seed = 123;
 %let sim = 10000;
 
@@ -54,7 +54,7 @@ run;
 
 /*print the last obs with for phat*/
 proc print data = hw1.DiceRollb(firstobs = &sim  keep= ph );
-	title 'phat for the sum of 3 dice = 9';
+    title 'phat for the sum of 3 dice = 9';
 run;
 
 /*/*(c) Use PROC GCHART to produce a histogram for sums of 3 dice.*/
@@ -109,7 +109,7 @@ retain sum_  count 0;
         count = ifn(sum_=15,count +1, count);
         /*phat is last obs*/
         ph = count/ &sim;
-		output;
+        output;
         /*reset phat*/
         sum_ = 0;
     end;
@@ -119,7 +119,7 @@ run;
 
 /*print the last obs with for phat*/
 proc print data = hw1.DiceRollf(firstobs = &sim  keep= ph );
-	title 'phat for the sum of 5 dice = 15';
+    title 'phat for the sum of 5 dice = 15';
 run;
 
 
@@ -215,7 +215,7 @@ run;
 /*using built in function with larger sample*/
 data hw1.expoDistB;
     do i = 1 to 1000;
-		uni = ranuni(&seed);
+        uni = ranuni(&seed);
         expo =5*ranexp(&seed);
         output;
     end;
