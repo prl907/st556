@@ -1,7 +1,7 @@
 option mstored sasmstore = robin;
 libname robin 'C:\Users\prl90\Desktop\St556';
 
-
+%let nsim = 10000;
 /*Macro to perform a proc univariate for both method 1 and method 2. Where the mean, variance , no of obs and the std is outputted. */
 
 %macro pMean(data);
@@ -23,7 +23,7 @@ libname robin 'C:\Users\prl90\Desktop\St556';
 data work.m1;
     call streaminit(234);
     rngmethod=1;
-    do i = 1 to 100000;
+    do i = 1 to &nsim;
         do;
             zOne = rand('uniform');
                 if ( zone > 0 & zone <=.5)then
@@ -49,7 +49,7 @@ run;
 data work.M2;
     call streaminit(123);
     rngmethod=2;
-    do sim=1 to 100000;
+    do sim=1 to &nsim;
         u=rand('unif');
         if u < .5 then 
                 y=rand('unif'); *a new call to RAND();
@@ -72,7 +72,7 @@ data work.zValue;
     merge work.m1sum(rename =(n = n1));
     merge work.m2sum(rename =(n = n2));
     z = ((m1_mean - m2_mean) - 0)/sqrt((m1_std**2/n1)+ (m1_std**2/n1));
-    pValue = 2 * (1- cdf("normal", z,0, 1));
+    pValue = 2 * (1- cdf("normal", abs(z),0, 1));
     drop n:;
 run;
 
