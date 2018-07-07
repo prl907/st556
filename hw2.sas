@@ -1,10 +1,21 @@
+*
+DONE BY :Robin Baldeo
+COURSE: ST556
+DATE WRITTEN: 6/28/2018
+HOMEWORK #: 1
+INPUT FILE: None
+;
+
 option mstored sasmstore = robin;
 libname robin 'C:\Users\prl90\Desktop\St556';
+%let path = C:\Users\prl90\Desktop\St556\;
 
+
+/*question 1*/
 %let nsim = 10000;
 /*Macro to perform a proc univariate for both method 1 and method 2. Where the mean, variance , no of obs and the std is outputted. */
 
-%macro pMean(data);
+%macro pMean(data)/store source;
     proc univariate data = work.&&data noprint;
     var y;
     output out = work.&&data.sum
@@ -93,7 +104,9 @@ proc univariate data = work.merge;
     histogram y/midpoints=0.1 to 15 by .2;
 run;
 
-/*TODO come back and coomment*/
+/*From the histogram both method appear to be producing the same thing. */
+
+
 title;
 
 /*question 2*/
@@ -109,47 +122,116 @@ title;
 /*indicate extra spaces, if any.*/
 
 /*LOG message*/
-/*1    %let candidate1 = Matt Damon ;*/
-/*2    %let candidate2 =" Bryan Cranston ";*/
-/*3    %put the #1 candidate is ( drumroll ) ... &candidate1 ;*/
-/*the #1 candidate is ( drumroll ) ... Matt Damon*/
-/*4    %put ;*/
-/**/
-/*5    %put the #2 candidate is ( drumroll ) ... &candidate2 ;*/
-/*the #2 candidate is ( drumroll ) ... " Bryan Cranston "*/
+
+    /*1    %let candidate1 = Matt Damon ;*/
+    /*2    %let candidate2 =" Bryan Cranston ";*/
+    /*3    %put the #1 candidate is ( drumroll ) ... &candidate1 ;*/
+    /*the #1 candidate is ( drumroll ) ... Matt Damon*/
+    /*4    %put ;*/
+    /**/
+    /*5    %put the #2 candidate is ( drumroll ) ... &candidate2 ;*/
+    /*the #2 candidate is ( drumroll ) ... " Bryan Cranston "*/
 
 
 /*(b) In which column number does the text produced by the frst %PUT statement begin?*/
-/*column 1*/
+      /*column 1*/
 
 /*(c) In which column number does the text produced by the third %PUT statement begin?*/
-/*column 1*/
+      /*column 1*/
 
 /*(d) What does the second %PUT statement do?*/
-/*This put statement includes all the empty space the value of candidate2.*/
+      /*This gives a blank row, seperating the first put from the thrid put.*/
 
-/*(e) Give the name and type and length of the macro variable created by the rst %LET statement.*/
-%put %sysfunc(length(&candidate1)); 
-/*The let statement would create a user defined macro statement candidate1 which is a char and has length 10 characters.*/
-/*10*/
+/*(e) Give the name and type and length of the macro variable created by the 
+      first  %LET statement.*/
+      %put %sysfunc(length(&candidate1)); 
+      /*The let statement would create a user defined macro statement candidate1 which is a char and has length 10 characters.*/
+
 
 /*(f) Give the name and type and length of the macro variable created by the second %LET statement.*/
-%put %sysfunc(length(&candidate2));
-/*The let statement would create a user defined macro statement candidate2 which is a char and has length 18 characters.*/
-/*18*/
+      %put %sysfunc(length(&candidate2));
+      /*The let statement would create a user defined macro statement candidate2 which is a char and has length 18 characters.*/
+      /*18*/
 
 /*question 3*/
-/*Provide a single macro statement that will resolve all user-dened macro variables and print their*/
-/*values in the log.*/
-%put _USER_;
+/*Provide a single macro statement that will resolve all user-defined macro variables and print their values in the log.*/
+    %put _USER_;
 
 
+/*question 4*/
+/*4. Which SAS component will execute the statement you specified in problem 3?*/
+    /*(c) The macro processor.*/
 
-/*4. Which SAS component will execute the statement you specied in problem 3?*/
-/*(c) The macro processor.*/
-
-
+/*question 5*/
 /*5. When macro triggers send code to the macro processor, the macro processor does its work when?*/
-/*(b) After compilation and before execution of SAS code*/
+/*   (a)Before compilation and execution of SAS code*/
+
+/*question 6*/
+/*6. When a macro trigger directs code to the macro processor, the macro processor continues requesting tokens until what special token is encountered?*/
+    /*unitl a ; is encountered*/
+
+/*question 7*/
+/*7. What global options can be used to specify whether or not a note will be written to the log each time the value of a macro variable is resolved? (There are two options.) What is the default setting?*/
+    /*the global options are symbolgen  and nosymbolgen, the default is nosymbolgen */
+
+/*question 8*/
+/*8. True or False:*/
+/*(a) A macro variable name must start with a letter.     True*/
+/*(b) A macro variable cannot start with a number.        True*/
+/*(c) ST556 is a valid name for macro variable.           True*/
+     /*year is a valid name for macro variable.                True */
+     /*_misc_ is a valid name for macro variable.              True*/
+     /*4ever_young is a valid name for macro variable.         False*/
+/*(d) SAS stores all macro variables as text, even if quotes are not used to specify the value.     True*/
 
 
+/*9. A text file is named \records2010.dat". (It is available online if you want to test your code.) Suppose*/
+/*you wish to use an infile statement to open this le and read in the data using a DATA step like the*/
+/*following*/
+
+/*(a) How must you specify the name of the text le so that it correctly references the macro variable*/
+/*year?*/
+
+%let year=2010;
+
+data records&year;
+    infile "&path.records&year..dat" firstobs=3 dsd;
+    length team $15;
+    input team $ w l t wpct pf pa; *w=wins l=losses;
+run;
+
+
+/*(b) Add a %LET statement before the following code so that it prints only those teams that won at*/
+/*least 12 games:*/
+%let wincut = 12;
+
+proc print data = one ;
+    title " teams winning at least & wincut games ";
+    where w >= &wincut ;
+    var team w l t wpct pf pa;
+run ;
+
+/*(c) Using all three of the following macro variable assignments, modify the WHERE statement and*/
+/*TITLE statements above so that it produces a report of only those teams winning 4 or fewer*/
+/*games, with an an appropriate title*/
+
+%let wincut =4;
+%let gverb = winning at most ;
+%let direct = <= ;
+
+proc print data = one ;
+    title "teams &gverb. &wincut games ";
+    where w &direct &wincut ;
+    var team w l t wpct pf pa;
+run ;
+
+
+/*(d) At the end of the program, add a macro statement (%PUT) that references an automatic macro*/
+/*variable and sends the two-level name of the most recently created SAS data set to the log.*/
+%put most recently created data set : &syslast;
+
+/*(e) Use the %scan macro function (twice) to partition this two-level name into its two components*/
+/*and write each to a separate line in the log,*/
+/*The log from parts (d) and (e) should look something like the following:*/
+%put the first component of this two - level name is %scan(&syslast,1);
+%put the second component of this two - level name is %scan(&syslast,2);
