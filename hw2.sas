@@ -2,8 +2,8 @@
 DONE BY :Robin Baldeo
 COURSE: ST556
 DATE WRITTEN: 6/28/2018
-HOMEWORK #: 1
-INPUT FILE: None
+HOMEWORK #: 2
+INPUT FILE: records2010.dat
 ;
 
 option mstored sasmstore = robin;
@@ -58,7 +58,7 @@ run;
 /*and a shifted exponential random variable. It can be sampled using code like the following:*/
 
 data work.M2;
-    call streaminit(123);
+    call streaminit(234);
     rngmethod=2;
     do sim=1 to &nsim;
         u=rand('unif');
@@ -97,6 +97,8 @@ data work.merge;
     keep rngmethod y;
 run;
 
+
+
 proc univariate data = work.merge;
     title "combines methods";
     class rngmethod;
@@ -104,7 +106,7 @@ proc univariate data = work.merge;
     histogram y/midpoints=0.1 to 15 by .2;
 run;
 
-/*From the histogram both method appear to be producing the same thing. */
+/*From the histogram both method appear very identical in shape very skewed*/
 
 
 title;
@@ -186,10 +188,10 @@ title;
 
 
 /*9. A text file is named \records2010.dat". (It is available online if you want to test your code.) Suppose*/
-/*you wish to use an infile statement to open this le and read in the data using a DATA step like the*/
+/*you wish to use an infile statement to open this file and read in the data using a DATA step like the*/
 /*following*/
 
-/*(a) How must you specify the name of the text le so that it correctly references the macro variable*/
+/*(a) How must you specify the name of the text file so that it correctly references the macro variable*/
 /*year?*/
 
 %let year=2010;
