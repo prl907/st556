@@ -1073,7 +1073,7 @@ options mprint;
 /*ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ*/
 
 /*7. List the four types of tokens in SAS syntax.*/
-/*literals, name, numeric and special*/
+/*literals, name, number and special char*/
 
 
 /*8. What is an option you can use so that every time a macro variable is referenced, the resolved value is*/
