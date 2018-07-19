@@ -1,7 +1,15 @@
+*
+DONE BY :Robin Baldeo
+COURSE: ST556
+SECTION: Online Section
+DATE WRITTEN: 7/19/2017
+HOMEWORK #: 4
+INPUT FILE: hoops2018.txt
+;
 
 
-filename txt "C:\Users\u551791\Desktop\per\556\hoops.txt";
-libname robin "C:\Users\u551791\Desktop\per\556\classFiles";
+filename txt "C:\Users\prl90\Desktop\St556\class_files\hoops2018.txt";
+libname robin "C:\Users\prl90\Desktop\St556\class_files";
 options nosymbolgen;
 
 
@@ -13,6 +21,13 @@ options nosymbolgen;
 /*only four calls to the defined macro you create. The desired report when selected rows of allanova*/
 /*are printed might look like the following:*/
 
+
+data pickles ; 
+    set robin.pickles ; 
+run ;
+
+
+ods listing close;
 %macro proc_glm(v, prefix);
     proc glm data = pickles ;
         class &v ;
@@ -20,6 +35,7 @@ options nosymbolgen;
         ods output modelanova = myanova&prefix ;
     run ;
 %mend proc_glm;
+ods listing;
 
 %macro append(list);
     %do i = 1 %to %sysfunc(countw(&list));
@@ -78,7 +94,7 @@ options mcompilenote= all mstored sasmstore= robin;
 %mend append;
 
 %let exp = type name product producer;
-call %append(&exp)
+ %append(&exp)
 quit;
 
 proc sort data = myanova1  out= allanova ;
@@ -179,4 +195,25 @@ run;
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 /*!!!!!! UConn !!!!!!*/
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+
+/*Question 3*/
+/*3. When producing a report with PROC SQL, how is the order of the columns in the report determined?*/
+/*when using proc sql the orders of the columns in the report are determined by the placement in the select stament in the proc sql*/
+
+/*Question 4*/
+/*4. (Yes/no) When using a SELECT statement, is it possible . . .*/
+/*(a) to select columns from multiple tables?*      Yes/ 
+/*(b) to select columns from 100 tables?*           Yes/
+/*(c) not to select from any tables?*               No/
+/*(d) to select columns from 1000 tables?*          Yes/
+
+/*Question 5*/
+/*5. Think about a SAS dataset. Using the language of SQL, give the analogous terms for each of the*/
+/*following*/
+/* Variable = column*/
+/* Observation = row*/
+/* Dataset = table*/
+
+/*Question 6*/
+/*6. What does SQL abbreviate? structured query language*/
 
