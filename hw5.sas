@@ -652,7 +652,10 @@ proc sql;
 quit;
 
 
+/*Question 11*/
 
+/*first set the source() then*/
+/*package.skeleton(name="thenameOfPackage");*/
 
 
 
